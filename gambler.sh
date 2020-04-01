@@ -8,6 +8,7 @@ target=0
 stoploss=0
 declare -a gamblingDays
 declare -a profitLoss
+continue=1
 gamblingDays[0]=100
 profitLoss[0]=0
 
@@ -74,15 +75,24 @@ function getLuckyAndUnluckiestDay() {
 }
 
 echo "Welcome to Gambling"
-for((i=1;i<21;i++))
-do	
-	setTargetStoploss
-	while [[ $stake -ne $target && $stake -ne $stoploss ]]
-	do
-		bet
+while [[ $continue -eq 1 ]] 
+do
+	for((i=1;i<21;i++))
+	do	
+		setTargetStoploss
+		while [[ $stake -ne $target && $stake -ne $stoploss ]]
+		do
+			bet
+		done
+		gamblingDays[i]=$stake
+		checkReport $i $(($i-1)) "on day $i"
 	done
-	gamblingDays[i]=$stake
-	checkReport $i $(($i-1)) "on day $i"
+	if [ ${gamblingDays[0]} -lt ${gamblingDays[20]} ]
+	then
+		gamblingDays[0]=${gamblingDays[20]}
+	else
+		continue=0
+	fi
 done
 checkReport 20 0 "this month"
 echo ${gamblingDays[@]}
