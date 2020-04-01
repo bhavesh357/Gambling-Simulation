@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 #constants
 BETTING_AMOUNT=1
 
