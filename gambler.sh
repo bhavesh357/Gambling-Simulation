@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash -x
 #constants
 BETTING_AMOUNT=1
 
@@ -7,7 +7,9 @@ stake=100
 target=0
 stoploss=0
 declare -a gamblingDays
+declare -a profitLoss
 gamblingDays[0]=100
+profitLoss[0]=0
 
 function bet() {
 	if [ $(($RANDOM%2)) -eq 0 ]
@@ -28,9 +30,10 @@ function checkReport() {
 	yesterdaysIndex=$2
 	day=$3
 	yesterdaysStack=${gamblingDays[$yesterdaysIndex]}
+	difference=$(($stake-$yesterdaysStack))
 	if [ $stake -gt $yesterdaysStack ]
 	then
-		echo you have won $(($stake-$yesterdaysStack)) $day
+		echo you have won $difference $day
 	fi
 	if [ $stake -lt $yesterdaysStack ]
 	then
@@ -41,6 +44,33 @@ function checkReport() {
 	
 		echo you have not won anything
 	fi
+	if [[ $index -ne 20 && $yesterdaysIndex -ne 0 ]]
+	then
+		profitLoss[$index]=$difference
+	fi
+}
+
+function getLuckyAndUnluckiestDay() {
+	unluckiest=0
+	luckiest=0
+	indexOfUnluckiest=0
+	indexOfLuckiest=0
+	for ((j=1;j<21;j++))
+	do
+	#finding smallest & largest 
+		if [ ${profitLoss[$j]} -lt $unluckiest ]
+		then
+			unluckiest=${profitLoss[$j]}
+			indexOfUnluckiest=$j
+		fi
+		if [ ${profitLoss[$j]} -gt $luckiest ]
+		then
+			luckiest=${profitLoss[$j]}
+			indexOfLuckiest=$j
+		fi
+	done
+	echo your luckiest day was day $indexOfLuckiest where you won ${profitLoss[$indexOfLuckiest]}
+	echo your unluckiest day was day $indexOfUnluckiest where you lost $((${gamblingDays[$(($indexOfUnluckiest-1))]}-${gamblingDays[$indexOfUnluckiest]}))
 }
 
 echo "Welcome to Gambling"
@@ -55,4 +85,7 @@ do
 	checkReport $i $(($i-1)) "on day $i"
 done
 checkReport 20 0 "this month"
+echo ${gamblingDays[@]}
+echo ${profitLoss[@]}
+getLuckyAndUnluckiestDay
 echo $stake
