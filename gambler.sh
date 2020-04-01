@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 #constants
 BETTING_AMOUNT=1
 
@@ -41,10 +41,9 @@ function checkReport() {
 	fi
 	if [ $stake -eq $yesterdaysStack ]
 	then
-	
 		echo you have not won anything
 	fi
-	if [[ $index -ne 20 && $yesterdaysIndex -ne 0 ]]
+	if [[ $(($index-1)) -eq $yesterdaysIndex ]]
 	then
 		profitLoss[$index]=$difference
 	fi
@@ -57,13 +56,14 @@ function getLuckyAndUnluckiestDay() {
 	indexOfLuckiest=0
 	for ((j=1;j<21;j++))
 	do
-	#finding smallest & largest 
-		if [ ${profitLoss[$j]} -lt $unluckiest ]
+	#finding smallest & largest
+		currentDiff=${profitLoss[$j]} 
+		if [ $currentDiff -lt $unluckiest ]
 		then
 			unluckiest=${profitLoss[$j]}
 			indexOfUnluckiest=$j
 		fi
-		if [ ${profitLoss[$j]} -gt $luckiest ]
+		if [ $currentDiff -gt $luckiest ]
 		then
 			luckiest=${profitLoss[$j]}
 			indexOfLuckiest=$j
