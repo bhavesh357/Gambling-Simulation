@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash 
 #constants
 BETTING_AMOUNT=1
 
@@ -7,6 +7,7 @@ stake=100
 target=0
 stoploss=0
 declare -a gamblingDays
+gamblingDays[0]=100
 
 function bet() {
 	if [ $(($RANDOM%2)) -eq 0 ]
@@ -23,14 +24,21 @@ function setTargetStoploss() {
 }
 
 function checkReport() {
-	if [ $stake -gt 100 ]
+	index=$1
+	yesterdaysIndex=$2
+	day=$3
+	yesterdaysStack=${gamblingDays[$yesterdaysIndex]}
+	if [ $stake -gt $yesterdaysStack ]
 	then
-		echo you have won $(($stake-100))
+		echo you have won $(($stake-$yesterdaysStack)) $day
 	fi
-	if [ $stake -lt 100 ]
+	if [ $stake -lt $yesterdaysStack ]
 	then
-		echo you have lost $((100-$stake))
-	else
+		echo you have lost $(($yesterdaysStack-$stake)) $day 
+	fi
+	if [ $stake -eq $yesterdaysStack ]
+	then
+	
 		echo you have not won anything
 	fi
 }
@@ -43,6 +51,8 @@ do
 	do
 		bet
 	done
+	gamblingDays[i]=$stake
+	checkReport $i $(($i-1)) "on day $i"
 done
-checkReport
+checkReport 20 0 "this month"
 echo $stake
