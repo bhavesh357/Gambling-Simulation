@@ -1,6 +1,7 @@
 #!/bin/bash 
 #constants
 BETTING_AMOUNT=1
+TIMEPERIOD=20
 
 #variable
 stake=100
@@ -55,7 +56,7 @@ function getLuckyAndUnluckiestDay() {
 	luckiest=0
 	indexOfUnluckiest=0
 	indexOfLuckiest=0
-	for ((j=1;j<21;j++))
+	for ((j=1;j<=$TIMEPERIOD;j++))
 	do
 	#finding smallest & largest
 		currentDiff=${profitLoss[$j]} 
@@ -77,7 +78,7 @@ function getLuckyAndUnluckiestDay() {
 echo "Welcome to Gambling"
 while [[ $continue -eq 1 ]] 
 do
-	for((i=1;i<21;i++))
+	for((i=1;i<=$TIMEPERIOD;i++))
 	do	
 		setTargetStoploss
 		while [[ $stake -ne $target && $stake -ne $stoploss ]]
@@ -87,14 +88,14 @@ do
 		gamblingDays[i]=$stake
 		checkReportBetweenGivenDays $i $(($i-1)) "on day $i"
 	done
-	if [ ${gamblingDays[0]} -lt ${gamblingDays[20]} ]
+	if [ ${gamblingDays[0]} -lt ${gamblingDays[$TIMEPERIOD]} ]
 	then
-		gamblingDays[0]=${gamblingDays[20]}
+		gamblingDays[0]=${gamblingDays[$TIMEPERIOD]}
 	else
 		continue=0
 	fi
 done
-checkReportBetweenGivenDays 20 0 "this month"
+checkReportBetweenGivenDays $TIMEPERIOD 0 "this month"
 echo ${gamblingDays[@]}
 echo ${profitLoss[@]}
 getLuckyAndUnluckiestDay
