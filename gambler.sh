@@ -26,7 +26,7 @@ function setTargetStoploss() {
 	stoploss=$(($stake-$(($stake/2))))
 }
 
-function checkReport() {
+function checkReportBetweenGivenDays() {
 	index=$1
 	yesterdaysIndex=$2
 	day=$3
@@ -85,7 +85,7 @@ do
 			bet
 		done
 		gamblingDays[i]=$stake
-		checkReport $i $(($i-1)) "on day $i"
+		checkReportBetweenGivenDays $i $(($i-1)) "on day $i"
 	done
 	if [ ${gamblingDays[0]} -lt ${gamblingDays[20]} ]
 	then
@@ -94,7 +94,7 @@ do
 		continue=0
 	fi
 done
-checkReport 20 0 "this month"
+checkReportBetweenGivenDays 20 0 "this month"
 echo ${gamblingDays[@]}
 echo ${profitLoss[@]}
 getLuckyAndUnluckiestDay
