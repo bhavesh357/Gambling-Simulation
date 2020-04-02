@@ -59,44 +59,53 @@ function getLuckyAndUnluckiestDay() {
 	for ((j=1;j<=$TIMEPERIOD;j++))
 	do
 	#finding smallest & largest
-		currentDiff=${profitLoss[$j]} 
-		if [ $currentDiff -lt $unluckiest ]
-		then
-			unluckiest=${profitLoss[$j]}
-			indexOfUnluckiest=$j
-		fi
-		if [ $currentDiff -gt $luckiest ]
-		then
-			luckiest=${profitLoss[$j]}
-			indexOfLuckiest=$j
-		fi
-	done
-	echo your luckiest day was day $indexOfLuckiest where you won ${profitLoss[$indexOfLuckiest]}
-	echo your unluckiest day was day $indexOfUnluckiest where you lost $((${gamblingDays[$(($indexOfUnluckiest-1))]}-${gamblingDays[$indexOfUnluckiest]}))
-}
-
-echo "Welcome to Gambling"
-while [[ $continue -eq 1 ]] 
-do
-	for((i=1;i<=$TIMEPERIOD;i++))
-	do	
-		setTargetStoploss
-		while [[ $stake -ne $target && $stake -ne $stoploss ]]
-		do
-			bet
-		done
-		gamblingDays[i]=$stake
-		checkReportBetweenGivenDays $i $(($i-1)) "on day $i"
-	done
-	if [ ${gamblingDays[0]} -lt ${gamblingDays[$TIMEPERIOD]} ]
+	currentDiff=${profitLoss[$j]} 
+	if [ $currentDiff -lt $unluckiest ]
 	then
-		gamblingDays[0]=${gamblingDays[$TIMEPERIOD]}
-	else
-		continue=0
+		unluckiest=${profitLoss[$j]}
+		indexOfUnluckiest=$j
+	fi
+	if [ $currentDiff -gt $luckiest ]
+	then
+		luckiest=${profitLoss[$j]}
+		indexOfLuckiest=$j
 	fi
 done
-checkReportBetweenGivenDays $TIMEPERIOD 0 "this month"
-echo ${gamblingDays[@]}
-echo ${profitLoss[@]}
-getLuckyAndUnluckiestDay
-echo $stake
+echo your luckiest day was day $indexOfLuckiest where you won ${profitLoss[$indexOfLuckiest]}
+echo your unluckiest day was day $indexOfUnluckiest where you lost $((${gamblingDays[$(($indexOfUnluckiest-1))]}-${gamblingDays[$indexOfUnluckiest]}))
+}
+
+
+function startGambling() {
+	while [[ $continue -eq 1 ]] 
+	do
+		for((i=1;i<=$TIMEPERIOD;i++))
+		do	
+			setTargetStoploss
+			while [[ $stake -ne $target && $stake -ne $stoploss ]]
+			do
+				bet
+			done
+			gamblingDays[i]=$stake
+			checkReportBetweenGivenDays $i $(($i-1)) "on day $i"
+		done
+		if [ ${gamblingDays[0]} -lt ${gamblingDays[$TIMEPERIOD]} ]
+		then
+			gamblingDays[0]=${gamblingDays[$TIMEPERIOD]}
+		else
+			continue=0
+		fi
+	done
+}
+
+function main() {
+	echo "Welcome to Gambling"
+	startGambling
+	checkReportBetweenGivenDays $TIMEPERIOD 0 "this month"
+	echo ${gamblingDays[@]}
+	echo ${profitLoss[@]}
+	getLuckyAndUnluckiestDay
+	echo your current $stake 
+}
+
+main
