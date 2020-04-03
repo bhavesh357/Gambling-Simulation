@@ -58,21 +58,21 @@ function getLuckyAndUnluckiestDay() {
 	indexOfLuckiest=0
 	for ((j=1;j<=$TIMEPERIOD;j++))
 	do
-	#finding smallest & largest
-	currentDiff=${profitLoss[$j]} 
-	if [ $currentDiff -lt $unluckiest ]
-	then
-		unluckiest=${profitLoss[$j]}
-		indexOfUnluckiest=$j
-	fi
-	if [ $currentDiff -gt $luckiest ]
-	then
-		luckiest=${profitLoss[$j]}
-		indexOfLuckiest=$j
-	fi
-done
-echo your luckiest day was day $indexOfLuckiest where you won ${profitLoss[$indexOfLuckiest]}
-echo your unluckiest day was day $indexOfUnluckiest where you lost $((${gamblingDays[$(($indexOfUnluckiest-1))]}-${gamblingDays[$indexOfUnluckiest]}))
+		#finding smallest & largest
+		currentDiff=${profitLoss[$j]} 
+		if [ $currentDiff -lt $unluckiest ]
+		then
+			unluckiest=${profitLoss[$j]}
+			indexOfUnluckiest=$j
+		fi
+		if [ $currentDiff -gt $luckiest ]
+		then
+			luckiest=${profitLoss[$j]}
+			indexOfLuckiest=$j
+		fi
+	done
+	echo your luckiest day was day $indexOfLuckiest where you won ${profitLoss[$indexOfLuckiest]}
+	echo your unluckiest day was day $indexOfUnluckiest where you lost $((${gamblingDays[$(($indexOfUnluckiest-1))]}-${gamblingDays[$indexOfUnluckiest]}))
 }
 
 
